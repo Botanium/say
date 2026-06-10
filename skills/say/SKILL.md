@@ -23,6 +23,12 @@ Command naming: `/say` and `$say` are Codex chat invocations. `codex-say` is the
 - If the user asks to change automatic read-aloud speed, run one of:
   `scripts/codex-say auto speed 1.5x`
   `scripts/codex-say auto rate 220`
+- If the user asks to set the default read-aloud rate for future commands, run:
+  `scripts/codex-say default rate <wpm>`
+  For short invocations such as `$say rate 210` or `/say rate 210`, run:
+  `scripts/codex-say rate 210`
+- If the user asks what the default read-aloud rate is, run:
+  `scripts/codex-say default status`
 - If the user asks to stop speech, run:
   `scripts/codex-say --stop`
   This stops active speech plus any pending `next` watcher. It does not disable automatic future answers; use `auto off` for that.
@@ -79,6 +85,8 @@ codex-say auto off
 codex-say auto status
 codex-say auto speed 1.5x
 codex-say auto rate 220
+codex-say default rate 210
+codex-say default status
 codex-say --next --timeout 240
 codex-say --latest
 codex-say --clipboard

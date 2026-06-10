@@ -1,6 +1,6 @@
 {
   "name": "codex-say",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Local no-key read-aloud for Codex answers, Markdown files, clipboard text, and selected text on macOS.",
   "author": {
     "name": "Botanium",

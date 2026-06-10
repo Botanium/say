@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+default_rate_file="${XDG_CONFIG_HOME:-$HOME/.config}/codex-say/default_rate"
 rate=170
+if [[ -f "$default_rate_file" ]]; then
+  configured_rate="$(/usr/bin/tr -d '[:space:]' < "$default_rate_file" 2>/dev/null || true)"
+  if [[ "$configured_rate" =~ ^[0-9]+$ ]]; then
+    rate="$configured_rate"
+  fi
+fi
+unset configured_rate
 speed=""
 voice=""
 save_to=""
@@ -16,6 +24,8 @@ force_clipboard=0
 force_latest=0
 timeout=180
 auto_action=""
+default_action=""
+default_value=""
 watch_next_internal=0
 watch_auto_internal=0
 watch_session_path=""
@@ -44,11 +54,14 @@ Usage:
   codex-say auto off                Disable automatic read-aloud for this thread
   codex-say auto status             Show automatic read-aloud status
   codex-say auto speed 1.5x         Enable or update automatic read-aloud speed
+  codex-say default rate 210        Set the saved default speech rate
+  codex-say default status          Show saved defaults
   pbpaste | codex-say               Read piped text aloud
 
 Useful options:
-  -r, --rate N                      Speech rate, default 170
+  -r, --rate N                      Speech rate, overrides saved default
       --speed X                     Speech multiplier, e.g. 1x, 1.25x, 1.5x, 2x
+      --default-rate N              Save the default speech rate
   -v, --voice NAME                  macOS voice name
   -f, --file PATH                   Read this file
       --clipboard                   Read from macOS clipboard
@@ -94,6 +107,31 @@ if multiplier <= 0 or multiplier > 3:
 
 print(round(170 * multiplier))
 PY
+}
+
+set_default_rate() {
+  new_rate="${1:?Missing default rate}"
+  if [[ ! "$new_rate" =~ ^[0-9]+$ || "$new_rate" -lt 80 || "$new_rate" -gt 500 ]]; then
+    echo "Default rate must be a whole number from 80 to 500 wpm." >&2
+    exit 2
+  fi
+
+  /bin/mkdir -p "$(/usr/bin/dirname "$default_rate_file")"
+  printf '%s\n' "$new_rate" > "$default_rate_file"
+  echo "Default speech rate set to ${new_rate} wpm."
+}
+
+show_default_status() {
+  if [[ -f "$default_rate_file" ]]; then
+    saved_rate="$(/usr/bin/tr -d '[:space:]' < "$default_rate_file" 2>/dev/null || true)"
+    if [[ "$saved_rate" =~ ^[0-9]+$ ]]; then
+      echo "Default speech rate: ${saved_rate} wpm"
+      echo "Config: $default_rate_file"
+      return 0
+    fi
+  fi
+  echo "Default speech rate: 170 wpm"
+  echo "Config: not set"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -182,6 +220,29 @@ while [[ $# -gt 0 ]]; do
       else
         shift "$(( $# >= 2 ? 2 : 1 ))"
       fi
+      ;;
+    --default-rate)
+      default_action="rate"
+      default_value="${2:?Missing value for $1}"
+      shift 2
+      ;;
+    default)
+      default_action="${2:-status}"
+      if [[ "$default_action" == "rate" ]]; then
+        default_value="${3:?Missing rate value for default rate}"
+        shift 3
+      elif [[ "$default_action" == "status" ]]; then
+        shift "$(( $# >= 2 ? 2 : 1 ))"
+      else
+        echo "Unknown default command: $default_action" >&2
+        echo "Use: codex-say default rate 210 | default status" >&2
+        exit 2
+      fi
+      ;;
+    rate)
+      default_action="rate"
+      default_value="${2:?Missing rate value for rate}"
+      shift 2
       ;;
     --raw)
       raw=1
@@ -801,6 +862,24 @@ case "$auto_action" in
   *)
     echo "Unknown auto command: $auto_action" >&2
     echo "Use: codex-say auto on | off | status | speed 1.5x | rate 220" >&2
+    exit 2
+    ;;
+esac
+
+case "$default_action" in
+  "")
+    ;;
+  rate)
+    set_default_rate "$default_value"
+    exit 0
+    ;;
+  status)
+    show_default_status
+    exit 0
+    ;;
+  *)
+    echo "Unknown default command: $default_action" >&2
+    echo "Use: codex-say default rate 210 | default status" >&2
     exit 2
     ;;
 esac

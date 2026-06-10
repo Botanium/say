@@ -10,6 +10,7 @@ This skill uses macOS `say` locally, so speech does not send the spoken text thr
 - Read the next final answer automatically with `next`.
 - Turn on thread-scoped automatic read-aloud for every future final answer.
 - Read clipboard text, inline text, or Markdown files.
+- Save a default speech rate such as `210 wpm`.
 - Use speed multipliers such as `--speed 1x`, `--speed 1.5x`, and `--speed 2x`.
 - Skip fenced code blocks silently for a more natural listening flow.
 - Stop active speech and stale launchd jobs with one command.
@@ -66,6 +67,7 @@ In Codex chat:
 /say auto on
 /say auto off
 /say auto status
+/say rate 210
 /say clipboard
 /say stop
 
@@ -74,6 +76,7 @@ $say next
 $say auto on
 $say auto off
 $say auto status
+$say rate 210
 $say clipboard
 $say stop
 ```
@@ -87,6 +90,7 @@ codex-say -f report.md
 codex-say --clipboard
 codex-say auto on
 codex-say auto speed 1.5x
+codex-say default rate 210
 codex-say auto status
 codex-say auto off
 codex-say --stop
@@ -96,6 +100,13 @@ Exact speech rates still work:
 
 ```bash
 codex-say -r 220 report.md
+```
+
+Set the saved default rate for future read-aloud commands:
+
+```bash
+codex-say default rate 210
+codex-say default status
 ```
 
 ## Automatic Mode
