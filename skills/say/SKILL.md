@@ -110,7 +110,7 @@ Automatic mode is thread-scoped: it stores local state in `~/.local/state/codex-
 
 Fenced code blocks are read as their contents while the backtick fences and language labels are skipped. Inline code remains readable because command names, flags, and file paths are often meaningful.
 
-Before Markdown cleanup, the helper removes skip patterns from `config/skip-patterns.txt` and optional user patterns from `~/.config/codex-say/skip-patterns.txt`. Use these files for recurring noisy text such as memory citations, metadata rows, or Git commit hashes. A rule can also use `pattern => replacement` to speak a short placeholder; the packaged defaults speak raw URLs as `this link` and path-like strings as `this path`, while Markdown link labels remain readable.
+Before Markdown cleanup, the helper removes skip patterns from `config/skip-patterns.txt` and optional user patterns from `~/.config/codex-say/skip-patterns.txt`. Use these files for recurring noisy text such as memory citations, rendered citation entries, metadata rows, or Git commit hashes. A rule can also use `pattern => replacement` to speak a short placeholder; the packaged defaults speak raw URLs as `this link` and path-like strings as `this path`, while Markdown link labels remain readable.
 
 ## User Guidance
 

@@ -45,6 +45,21 @@ if "$helper" --dry-run -f "$citation_sample" | grep -qi "memory"; then
 fi
 rm -f "$citation_sample"
 
+rendered_citation_sample="$(mktemp -t codex-say-rendered-citation-sample)"
+cat > "$rendered_citation_sample" <<'EOF'
+Useful answer.
+
+<citation_entries>
+MEMORY.md:1-24|note=[codex-say repo context and skip-pattern tasks]
+rollout_summaries/2026-06-09T08-49-41-omt2-codex_say_plugin_and_skip_patterns.md:10-12|note=[read aloud citation cleanup]
+</citation_entries>
+<rollout_ids>
+019eab92-bd1d-70c1-9691-9ca82d4383d0
+</rollout_ids>
+EOF
+"$helper" --dry-run -f "$rendered_citation_sample" | grep -q "Would speak 14 characters"
+rm -f "$rendered_citation_sample"
+
 commit_sample="$(mktemp -t codex-say-commit-sample)"
 cat > "$commit_sample" <<'EOF'
 Useful answer.

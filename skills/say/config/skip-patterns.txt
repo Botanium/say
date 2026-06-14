@@ -5,6 +5,9 @@
 # Codex memory citation payloads and the collapsed visible citation row.
 (?is)<oai-mem-citation\b[^>]*>.*?</oai-mem-citation>
 (?im)^[^\S\n]*<?[^\S\n]*\d+[^\S\n]+memory citations?>?[^\S\n]*$
+(?im)^[^\S\n]*</?(?:citation_entries|rollout_ids|oai-mem-citation)>[^\S\n]*$
+(?im)^[^\S\n]*(?:MEMORY\.md|rollout_summaries/|skills/)[^|\n]*\|note=\[[^\n]*\][^\S\n]*$
+(?im)^[^\S\n]*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}[^\S\n]*$
 
 # GitHub/Git commit hash noise in final status summaries.
 (?im)^[^\S\n]*(?:pushed commit|commit|github commit|pushed to github|latest commit)[^\S\n]*:?[^\S\n]*`?[0-9a-f]{7,40}`?\.?[^\S\n]*$
