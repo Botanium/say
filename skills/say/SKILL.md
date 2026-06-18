@@ -1,9 +1,9 @@
 ---
-name: codex-say
-description: Codex Say is a local no-key read-aloud workflow for Codex/ChatGPT output, selected text, clipboard text, and Markdown files using macOS speech instead of sending large content through the model. Use when the user invokes /say or $say, asks for /read behavior, wants chat output read aloud, wants a .md report spoken, wants text-to-speech without an API key, or wants to avoid token use while listening to generated reports.
+name: say
+description: Say is a local no-key read-aloud workflow for Codex/ChatGPT output, selected text, clipboard text, and Markdown files using macOS speech instead of sending large content through the model. Use when the user invokes /say or $say, asks for /read behavior, wants chat output read aloud, wants a .md report spoken, wants text-to-speech without an API key, or wants to avoid token use while listening to generated reports.
 ---
 
-# Codex Say
+# Say
 
 Use local macOS speech for read-aloud tasks. Keep the model out of the content path whenever possible: read from the clipboard, a file path, or the local Codex transcript directly, not by pasting or loading large text into the conversation.
 
@@ -127,6 +127,6 @@ Fenced code blocks are read as their contents while the backtick fences and lang
 
 ## Skip Patterns
 
-Codex Say includes a packaged skip-pattern file at `config/skip-patterns.txt`. It keeps noisy transcript text out of speech, including memory citations, rendered citation rows, Git commit hashes, raw links, and file paths.
+Say includes a packaged skip-pattern file at `config/skip-patterns.txt`. It keeps noisy transcript text out of speech, including memory citations, rendered citation rows, Git commit hashes, raw links, and file paths.
 
 Users can add their own skip rules in `~/.config/codex-say/skip-patterns.txt` without editing the skill. Each rule is a Python regular expression removed before Markdown cleanup. A rule can also use `pattern => replacement` to speak a short placeholder; the packaged defaults speak raw URLs as `this link` and path-like strings as `this path`, while Markdown link labels remain readable.

@@ -1,13 +1,13 @@
 {
-  "name": "codex-say",
-  "version": "0.2.7",
+  "name": "say",
+  "version": "0.2.8",
   "description": "Local no-key read-aloud for Codex answers, Markdown files, clipboard text, and selected text on macOS.",
   "author": {
     "name": "Botanium",
     "url": "https://github.com/Botanium"
   },
-  "homepage": "https://github.com/Botanium/codex-say",
-  "repository": "https://github.com/Botanium/codex-say",
+  "homepage": "https://github.com/Botanium/say",
+  "repository": "https://github.com/Botanium/say",
   "license": "MIT",
   "keywords": [
     "codex",
@@ -18,9 +18,9 @@
   ],
   "skills": "./skills",
   "interface": {
-    "displayName": "Codex Say",
+    "displayName": "Say",
     "shortDescription": "Read Codex output aloud locally without an API key.",
-    "longDescription": "Codex Say adds local macOS read-aloud commands for Codex answers, Markdown reports, clipboard text, and selected text. It is designed for cognitive offloading without sending spoken text through an external model.",
+    "longDescription": "Say adds local macOS read-aloud commands for Codex answers, Markdown reports, clipboard text, and selected text. It is designed for cognitive offloading without sending spoken text through an external model.",
     "developerName": "Botanium",
     "category": "Productivity",
     "capabilities": [

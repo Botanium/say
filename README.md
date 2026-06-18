@@ -1,6 +1,6 @@
-# Codex Say
+# Say
 
-Local, no-key read-aloud for Codex and ChatGPT workflows on macOS, packaged as a Codex plugin with a reusable `say` skill.
+Local, no-key read-aloud for Codex and ChatGPT workflows on macOS.
 
 This skill uses macOS `say` locally, so speech does not send the spoken text through a model. It is designed for cognitive offloading: read visually while listening to the same answer, Markdown report, clipboard text, or selected chat output.
 
@@ -59,8 +59,8 @@ You can install the plugin from this repository in Codex, or use the local skill
 ## Install the local skill helper
 
 ```bash
-git clone https://github.com/Botanium/codex-say.git
-cd codex-say
+git clone https://github.com/Botanium/say.git
+cd say
 bash scripts/install.sh
 ```
 
@@ -168,7 +168,7 @@ The current plugin keeps speech local by default. A future companion app can add
 
 ## Skip Patterns
 
-Codex Say removes noisy text before speaking. Packaged defaults live in:
+Say removes noisy text before speaking. Packaged defaults live in:
 
 ```bash
 skills/say/config/skip-patterns.txt
