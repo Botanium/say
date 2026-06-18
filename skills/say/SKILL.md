@@ -1,9 +1,9 @@
 ---
-name: say
-description: Local no-key read-aloud workflow for Codex/ChatGPT output, selected text, clipboard text, and Markdown files using macOS speech instead of sending large content through the model. Use when the user invokes $say, asks for /say or /read behavior, wants chat output read aloud, wants a .md report spoken, wants text-to-speech without an API key, or wants to avoid token use while listening to generated reports.
+name: codex-say
+description: Codex Say is a local no-key read-aloud workflow for Codex/ChatGPT output, selected text, clipboard text, and Markdown files using macOS speech instead of sending large content through the model. Use when the user invokes /say or $say, asks for /read behavior, wants chat output read aloud, wants a .md report spoken, wants text-to-speech without an API key, or wants to avoid token use while listening to generated reports.
 ---
 
-# Say
+# Codex Say
 
 Use local macOS speech for read-aloud tasks. Keep the model out of the content path whenever possible: read from the clipboard, a file path, or the local Codex transcript directly, not by pasting or loading large text into the conversation.
 

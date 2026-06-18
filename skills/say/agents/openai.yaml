@@ -1,4 +1,4 @@
 interface:
-  display_name: "Say"
+  display_name: "Codex Say"
   short_description: "Read clipboard, text, or Markdown aloud locally"
   default_prompt: "Use $say to read the current clipboard aloud without pasting the content into chat."

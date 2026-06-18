@@ -59,8 +59,8 @@ You can install the plugin from this repository in Codex, or use the local skill
 ## Install the local skill helper
 
 ```bash
-git clone https://github.com/Botanium/codex-say-skill.git
-cd codex-say-skill
+git clone https://github.com/Botanium/codex-say.git
+cd codex-say
 bash scripts/install.sh
 ```
 

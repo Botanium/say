@@ -1,13 +1,13 @@
 {
   "name": "codex-say",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Local no-key read-aloud for Codex answers, Markdown files, clipboard text, and selected text on macOS.",
   "author": {
     "name": "Botanium",
     "url": "https://github.com/Botanium"
   },
-  "homepage": "https://github.com/Botanium/codex-say-skill",
-  "repository": "https://github.com/Botanium/codex-say-skill",
+  "homepage": "https://github.com/Botanium/codex-say",
+  "repository": "https://github.com/Botanium/codex-say",
   "license": "MIT",
   "keywords": [
     "codex",
