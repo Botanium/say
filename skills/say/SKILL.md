@@ -123,6 +123,8 @@ Stop removes active speech and pending one-shot `next` watchers. It intentionall
 
 Automatic mode is thread-scoped: it stores local state in `~/.local/state/codex-say`, remembers the transcript cursor, and reads each future final answer once.
 
+When a manual `/say` operation runs while automatic mode is on, the helper suppresses the next tiny Codex command-confirmation response so it does not interrupt the active clipboard, file, or inline-text speech.
+
 Fenced code blocks are read as their contents while the backtick fences and language labels are skipped. Inline code remains readable because command names, flags, and file paths are often meaningful.
 
 ## Skip Patterns

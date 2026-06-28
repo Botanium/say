@@ -164,6 +164,8 @@ Check or disable it:
 
 Automatic mode is thread-scoped. It watches the local Codex transcript, remembers the last line it already handled, and only speaks future `final_answer` messages. `/say stop` stops the current voice and pending one-shot `next` watchers; `/say auto off` disables automatic future answers.
 
+Manual read-aloud commands are protected while automatic mode is on. For example, `/say clipboard` will keep reading the clipboard and skip the tiny Codex confirmation response, instead of letting auto mode interrupt the clipboard audio.
+
 The current plugin keeps speech local by default. A future companion app can add a visual progress indicator and richer pause/resume using macOS `AVSpeechSynthesizer`; the plain `say` command does not expose word-level progress.
 
 ## Skip Patterns

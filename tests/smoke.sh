@@ -64,6 +64,23 @@ ln -sf "$helper" "$tmp_bin/codex-say"
 rm -rf "$tmp_bin"
 rm -f "$rendered_citation_sample"
 
+auto_state_dir="$(mktemp -d)"
+auto_session="$(mktemp -t codex-say-auto-session)"
+cat > "$auto_session" <<'EOF'
+{"type":"response_item","payload":{"type":"message","role":"assistant","phase":"final_answer","content":[{"text":"Reading clipboard now."}]}}
+{"type":"response_item","payload":{"type":"message","role":"assistant","phase":"final_answer","content":[{"text":"Useful final answer."}]}}
+EOF
+printf '1\n' > "$auto_state_dir/enabled"
+printf '%s\n' "$auto_session" > "$auto_state_dir/session_path"
+printf '0\n' > "$auto_state_dir/cursor"
+printf '210\n' > "$auto_state_dir/rate"
+printf '\n' > "$auto_state_dir/voice"
+printf '0\n' > "$auto_state_dir/raw"
+printf '1\n' > "$auto_state_dir/skip_next_final_count"
+CODEX_SAY_TEST_PRINT_AUTO=1 "$helper" --watch-auto-internal "$auto_state_dir" "test-label" | grep -q "^Useful final answer\\.$"
+rm -rf "$auto_state_dir"
+rm -f "$auto_session"
+
 commit_sample="$(mktemp -t codex-say-commit-sample)"
 cat > "$commit_sample" <<'EOF'
 Useful answer.

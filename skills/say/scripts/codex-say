@@ -427,6 +427,35 @@ auto_enabled_current_thread() {
   [[ -f "$state_dir/enabled" ]] && launchd_label_active "$label"
 }
 
+mark_auto_skip_next_final_for_state() {
+  state_dir="${1:?Missing auto state dir}"
+  /bin/mkdir -p "$state_dir"
+  /usr/bin/python3 - "$state_dir/skip_next_final_count" <<'PY'
+import os
+import sys
+
+path = sys.argv[1]
+try:
+    with open(path, "r", encoding="utf-8") as handle:
+        count = int((handle.read().strip() or "0"))
+except (FileNotFoundError, ValueError):
+    count = 0
+
+tmp = f"{path}.tmp"
+with open(tmp, "w", encoding="utf-8") as handle:
+    handle.write(str(count + 1))
+    handle.write("\n")
+os.replace(tmp, path)
+PY
+}
+
+mark_auto_skip_next_final() {
+  state_dir="$(auto_state_dir_for_thread 2>/dev/null)" || return 0
+  label="$(auto_launch_label_for_thread 2>/dev/null)" || return 0
+  [[ -f "$state_dir/enabled" ]] && launchd_label_active "$label" || return 0
+  mark_auto_skip_next_final_for_state "$state_dir"
+}
+
 read_next_codex_message() {
   /usr/bin/python3 - "$watch_session_path" "$watch_baseline_lines" "$timeout" <<'PY'
 import json
@@ -494,6 +523,7 @@ state_dir = sys.argv[1]
 enabled_path = os.path.join(state_dir, "enabled")
 session_path_path = os.path.join(state_dir, "session_path")
 cursor_path = os.path.join(state_dir, "cursor")
+skip_next_path = os.path.join(state_dir, "skip_next_final_count")
 
 def read_text(path, default=""):
     try:
@@ -508,6 +538,23 @@ def write_text(path, value):
         handle.write(str(value))
         handle.write("\n")
     os.replace(tmp, path)
+
+def consume_skip_next():
+    try:
+        count = int(read_text(skip_next_path, "0") or "0")
+    except ValueError:
+        count = 0
+    if count <= 0:
+        return False
+    count -= 1
+    if count:
+        write_text(skip_next_path, count)
+    else:
+        try:
+            os.remove(skip_next_path)
+        except FileNotFoundError:
+            pass
+    return True
 
 def extract_text(content):
     if isinstance(content, str):
@@ -556,8 +603,10 @@ while True:
                     continue
                 if payload.get("phase") != "final_answer":
                     continue
-                text = extract_text(payload.get("content"))
                 write_text(cursor_path, line_number)
+                if consume_skip_next():
+                    continue
+                text = extract_text(payload.get("content"))
                 if text.strip():
                     sys.stdout.write(text)
                     sys.exit(0)
@@ -844,6 +893,7 @@ start_auto_read_aloud() {
   fi
 
   /bin/mkdir -p "$state_dir"
+  /bin/rm -f "$state_dir/skip_next_final_count"
   printf '1\n' > "$state_dir/enabled"
   printf '%s\n' "$session_path" > "$state_dir/session_path"
   printf '%s\n' "$cursor" > "$state_dir/cursor"
@@ -851,6 +901,7 @@ start_auto_read_aloud() {
   printf '%s\n' "$voice" > "$state_dir/voice"
   printf '%s\n' "$raw" > "$state_dir/raw"
   printf '%s\n' "$label" > "$state_dir/label"
+  mark_auto_skip_next_final_for_state "$state_dir"
 
   if ! /bin/launchctl submit -l "$label" -- "$self_path" --watch-auto-internal "$state_dir" "$label"; then
     /bin/rm -f "$state_dir/enabled"
@@ -898,6 +949,14 @@ run_auto_watcher() {
     if [[ "$current_raw" != "1" ]]; then
       text="$(printf '%s' "$text" | clean_markdown_text)"
     fi
+    if [[ -z "${text//[[:space:]]/}" ]]; then
+      continue
+    fi
+
+    if [[ "${CODEX_SAY_TEST_PRINT_AUTO:-0}" == "1" ]]; then
+      printf '%s\n' "$text"
+      exit 0
+    fi
 
     tmp_file="$(/usr/bin/mktemp -t codex-say-auto)"
     printf '%s\n' "$text" > "$tmp_file"
@@ -925,10 +984,12 @@ case "$default_action" in
   "")
     ;;
   rate)
+    mark_auto_skip_next_final
     set_default_rate "$default_value"
     exit 0
     ;;
   status)
+    mark_auto_skip_next_final
     show_default_status
     exit 0
     ;;
@@ -945,6 +1006,7 @@ if [[ "$watch_auto_internal" -eq 1 ]]; then
 fi
 
 if [[ "$auto_action" == "status" ]]; then
+  mark_auto_skip_next_final
   show_auto_status
   exit 0
 elif [[ "$auto_action" == "off" ]]; then
@@ -956,6 +1018,7 @@ elif [[ "$auto_action" == "on" ]]; then
 fi
 
 if [[ "$stop" -eq 1 ]]; then
+  mark_auto_skip_next_final
   cleanup_codex_say_processes 1 0
   echo "Stopped macOS speech."
   exit 0
@@ -963,6 +1026,7 @@ fi
 
 if [[ "$next" -eq 1 ]]; then
   if auto_enabled_current_thread; then
+    mark_auto_skip_next_final
     echo "Auto read-aloud is already on for this thread; it will speak the next final answer."
     exit 0
   fi
@@ -1039,6 +1103,10 @@ fi
 if [[ -z "${text//[[:space:]]/}" ]]; then
   echo "Nothing to read. Copy text first, pass text, pipe text, or use -f FILE." >&2
   exit 1
+fi
+
+if [[ "$dry_run" -eq 0 && "$watch_next_internal" -eq 0 ]]; then
+  mark_auto_skip_next_final
 fi
 
 if [[ "$dry_run" -eq 0 && "$watch_next_internal" -eq 0 ]]; then
